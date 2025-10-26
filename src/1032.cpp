@@ -1,4 +1,4 @@
-// long long num = 0, flag = 0;防止超出范围出现负数
+// 
 #include <stdio.h>
 #include <string.h>
 int main()
