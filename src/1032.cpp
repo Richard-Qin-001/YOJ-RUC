@@ -1,4 +1,4 @@
-// 
+// 对结果进行排序时中间变量temp必须是 long long 类型
 #include <stdio.h>
 #include <string.h>
 int main()
@@ -86,7 +86,7 @@ int main()
             }
         }
     }
-    int temp = 0;
+    long long temp = 0;
     for (int i = 0; i < flag; i++)
     {
         for (int j = 0; j < flag - i - 1; j++)//将求得结果排序
