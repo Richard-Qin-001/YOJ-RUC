@@ -1,82 +1,88 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-vector<int> large_numplus(const vector<int>&a, const vector<int>&b){
-    vector<int> result;
-    vector<int> ar = a; vector<int> br =b;
-    reverse(ar.begin(), ar.end());
-    reverse(br.begin(), br.end());
-    int x, y, z = 0;
-    size_t la = ar.size(), lb = br.size(), max_len = max(la,lb);
-    result.assign(max_len, 0);
-    size_t i = 0;
-    for(i; i < max_len; i++){
-        x = (i < la) ? a[i] : 0;
-        y = (i < lb) ? b[i] : 0;
-        result[i] += (x + y + z) % 10;
-        z = (x + y + z) / 10;
-    }
-
-    if (z != 0) result.push_back(z);
-    // size_t index = result.size() - 1;
-    // while(result[index] =0 ) result.pop_back();
-    // reverse(result.begin(), result.end());
-    return result;
-}
-
-vector<int> large_numpower(const vector<int>&a){
-    vector<int> result;
-    int carry = 0;
-    for (int digit : a) {
-        int temp = digit * 2 + carry;
-        result.push_back(temp % 10);
-        carry = temp / 10;
-    }
-    if (carry != 0) {
-        result.push_back(carry);
-    }
-    return result;
-}
-
-vector<int> ll2vector(const long long&n){
-    vector<int> result;
-    if (n == 0) {
-        result.push_back(0);
-        return result;
-    }
-    else {
-        long long tmp = n;
-        while(tmp > 0){
-            int digit = tmp % 10;
-            result.push_back(digit);
-            tmp = tmp / 10;
+class BigInt{
+    using ll = long long;
+private:
+    static const int BASE = 10000;
+    static const int WIDTH = 4;
+    vector<int> s;
+public:
+    BigInt(int num = 0){*this = num;}
+    BigInt(const string& str){
+        s.clear();
+        int len = str.length();
+        for(int i = len; i > 0; i -= WIDTH){
+            int end = i;
+            int start = max(0, i - WIDTH);
+            int x = stoi(str.substr(start, end - start));
+            s.push_back(x);
         }
-        // reverse(result.begin(), result.end());
-        return result;
     }
-}
-
-vector<int> F(const long long&n){
-    if (n == 1) return {1};
-    vector<int> fn_minus_1 = {5};
-    vector<int> fn;
-    if (n == 2) return {5};
-    for(size_t i = 3; i <= n; i++){
-        fn = large_numplus(large_numpower(fn_minus_1), ll2vector(2 *i - 1));
-        fn_minus_1 = fn;
+    BigInt& operator=(int num){
+        s.clear();
+        do{
+            s.push_back(num % BASE);
+            num /= BASE;
+        }while (num > 0);
+        return *this;
     }
-    return fn;
+    BigInt operator+(const BigInt&b)const{
+        BigInt c;
+        c.s.clear();
+        c.s.reserve(max(s.size(), b.s.size()) + 1);
+        int g = 0;
+        size_t s_len = s.size(), b_s_len = b.s.size();
+        for(size_t i = 0; i < s_len || i < b_s_len || g; ++i){
+            int x = g;
+            if(i < s_len) x += s[i];
+            if(i < b_s_len) x += b.s[i];
+            c.s.emplace_back(x % BASE);
+            g = x / BASE;
+        }
+        return c;
+    }
+    BigInt& operator+=(const BigInt& b){
+        *this = *this + b;
+        return *this;
+    }
+    BigInt operator*(int b)const{
+        BigInt c;
+        c.s.clear();
+        c.s.reserve(s.size() * b + 1);
+        ll g = 0;
+        int s_len = s.size();
+        for(size_t i = 0; i < s_len || g; ++i){
+            ll x = g;
+            if(i < s_len) x += 1LL * s[i] * b;
+            c.s.emplace_back(x % BASE);
+            g = x / BASE;
+        }
+        return c;
+    }
+    friend ostream& operator<<(ostream& out, const BigInt& x){
+    if (x.s.empty()){
+        out << 0;
+        return out;
+    }
+    out << x.s.back();
+    for(int i = x.s.size() - 2; i >= 0; --i)out << setw(WIDTH) << setfill('0') << x.s[i];
+    return out;
 }
+};
 
-void solve(){
-    long long n;
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
     cin >> n;
-    vector<int> result = F(n);
-    reverse(result.begin(), result.end());
-    for(auto&c : result) cout << c;
-    cout << endl;
+    BigInt F = 1, S = 1;
+    for(int i = 2; i <= n; ++i){
+        BigInt i2 = BigInt(i) * i;
+        F = i2 + S;
+        S += F;
+    }
+    cout << F << endl;
+    return 0;
 }
-int main(){ios_base::sync_with_stdio(false); cin.tie(NULL); solve(); return 0;}
