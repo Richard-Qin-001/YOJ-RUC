@@ -1,8 +1,10 @@
 # include <iostream>
 # include <cmath>
 # include <iomanip>
+#include <numbers>
 
 using namespace std;
+const double M_PI = std::numbers::pi;
 
 long double normalize_x(long double x) {
     x = fmod(x, 2.0 * M_PI); 

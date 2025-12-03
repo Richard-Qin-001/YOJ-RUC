@@ -1,33 +1,27 @@
-#include <iostream>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
-ll power(ll base, ll exp){
-    ll result = 1;
-    for(int i = 0; i < exp; i++) result *= base;
-    return result;
+bool check(int n, int m) {
+    int coconuts = n;
+    for (int i = 0; i < m; ++i) {
+        if ((coconuts - 1) % m != 0) return false;
+        coconuts = (coconuts - 1) * (m - 1) / m;
+    }
+    return coconuts % m == 0;
 }
 
-void solve(ll n){
-    const int MAX_M = 9;
-    for(int m = MAX_M; m >= 2; m--){
-        ll P = power(m ,m);
-        if (P > m + n -1) continue;
-        ll numerator = n + m - 1;
-        
-
+int main() {
+    int n;
+    while (cin >> n && n != 0) {
+        int res = -1;
+        for (int m = 10; m >= 2; --m) {
+            if (check(n, m)) {
+                res = m;
+                break;
+            }
+        }
+        if (res == -1) cout << "no solution" << endl;
+        else cout << res << endl;
     }
-    cout << "no solution" << endl;
-}
-
-int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    ll n;
-    while ((cin >> n) && n != 0) solve(n);
-    {
-        return 0;
-    }
+    return 0;
 }
