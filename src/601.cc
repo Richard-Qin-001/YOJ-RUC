@@ -1,18 +1,62 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
-vector<vector<int>> class_seat;
-int max_students = 0;
+int n, m;
+vector<vector<int>> grid;
+vector<vector<bool>> visited;
 
-// void DFS(){
 
-// }
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
 
-void solve(){
-    int n, m;
-    cin >> n >> m;
-    class_seat.assign(n, vector<int>(m, 0));
-    for(int i = 0; i < n; ++i)for(int j = 0; j < m; ++j)cin >> class_seat[i][j];
-
+bool inBounds(int x, int y) {
+    return x >= 0 && x < n && y >= 0 && y < m;
 }
-int main(){ios_base::sync_with_stdio(false); cin.tie(NULL); solve(); return 0;}
+
+int bfs(int sx, int sy) {
+    queue<pair<int, int>> q;
+    q.push({sx, sy});
+    visited[sx][sy] = true;
+
+    int black = 0, white = 0;
+
+    while (!q.empty()) {
+        auto [x, y] = q.front(); q.pop();
+
+        if ((x + y) % 2 == 0) black++;
+        else white++;
+
+        for (int d = 0; d < 4; ++d) {
+            int nx = x + dx[d];
+            int ny = y + dy[d];
+            if (inBounds(nx, ny) && !visited[nx][ny] && grid[nx][ny] == 0) {
+                visited[nx][ny] = true;
+                q.push({nx, ny});
+            }
+        }
+    }
+
+    return max(black, white);
+}
+
+int main() {
+    cin >> n >> m;
+    grid.assign(n, vector<int>(m));
+    visited.assign(n, vector<bool>(m, false));
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            cin >> grid[i][j];
+
+    int total = 0;
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            if (!visited[i][j] && grid[i][j] == 0)
+                total += bfs(i, j);
+
+    cout << total << endl;
+    return 0;
+}
