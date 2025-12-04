@@ -4,18 +4,13 @@
 
 using namespace std;
 
-vector<vector<int>> input(const int & m, const int& n){
-    vector<vector<int>> matrix(m, vector<int>(n));
-    for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) cin >> matrix[i][j];
-    return matrix;
-}
-
 void solve(){
     int m, n, k;
     cin >> m >> n >> k;
     vector<int> sort_columns(k);
     for (int i = 0; i < k; i++) cin >> sort_columns[i];
-    vector<vector<int>> matrix = input(m, n);
+    vector<vector<int>> matrix(m, vector<int>(n, 0));
+    for(int i = 0; i < m; ++i)for(int j = 0; j < n; ++ j)cin >> matrix[i][j];
     sort(
         matrix.begin(), matrix.end(),
         [&sort_columns](const vector<int>& row1, const vector<int>& row2){
