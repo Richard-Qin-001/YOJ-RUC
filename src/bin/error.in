@@ -1,3 +1,4 @@
-1001 C++ Primer 1
-1002 Design Patterns 1
-2001 Alice 1
+3
+Rectangle,Table,2.0,1.5
+Sphere,Ball,0.5
+Composite,ErrorTest,False

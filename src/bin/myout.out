@@ -1,21 +1,11 @@
-Book ID: 1001
-Title: C++ Primer
-Status: Available
-Book ID: 1002
-Title: Design Patterns
-Status: Available
-Patron ID: 2001
-Name: Alice
-Borrowed books: 
-Total borrowed: 0
-===== Borrow Operation =====
-Book ID: 1001
-Title: C++ Primer
-Status: Borrowed by 2001
-Book ID: 1002
-Title: Design Patterns
-Status: Available
-Patron ID: 2001
-Name: Alice
-Borrowed books: 1001 
-Total borrowed: 1
+Scene contains 3D objects
+Total area: 6.14159
+Total volume: 0.523598
+Releasing Composite: Scene
+Destroying Rectangle: Table
+Destroying Shape: Table
+Destroying Sphere: Ball
+Destroying Shape: Ball
+Not releasing children of ErrorTest
+Destroying Shape: ErrorTest
+Destroying Shape: Scene
