@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+
+using namespace std;
+
+// add any code (or leave it emptry) you need below
+// ____qcodep____
+#include<algorithm>
+
+template<typename Container>
+void Print(Container &s) {
+	int i = 0, l = s.size();
+	for (int v : s) {
+		cout << v;
+		if (i < l -1) cout << " ";
+	}
+	cout << endl;
+}
+
+int main() {
+	int m, n, val;
+	cin >> m >> n;
+	vector<int> s1, s2;
+	// read data to s1 and s2
+	// ____qcodep____
+    for(int i = 0; i < m; ++i){
+        int val;
+        cin >> val;
+        s1.emplace_back(val);
+    }
+    for(int i = 0; i < n; ++i){
+        int val;
+        cin >> val;
+        s2.emplace_back(val);
+    }
+
+	Print(s1);
+	Print(s2);
+
+	// put any necessary code below, or leave it empty
+	// ____qcodep____
+    sort(s1.begin(), s1.end());
+    sort(s2.begin(), s2.end());
+
+	vector<int> s3;
+	// add any code you need below: s3 = s1 - s2
+	// ____qcodep____
+    set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(), inserter(s3, s3.begin()));
+    Print(s3);
+
+	vector<int> s4;
+	// add any code you need below: s4 = s1 /\ s2
+	// ____qcodep____
+    set_intersection(s1.begin(), s1.end(), s2.begin(), s2.end(), inserter(s4, s4.begin()));
+    Print(s4);
+
+	vector<int> s5;
+	// add any code you need below: s5 = s1 \/ s2
+	// ____qcodep____
+    set_union(s1.begin(), s1.end(), s2.begin(), s2.end(), inserter(s5, s5.begin()));
+    Print(s5);
+
+	return 0;
+}
+
