@@ -173,6 +173,8 @@ void LinkedList<T>::deleteCurrent() {
         if (currPtr == front)
         {
             deleteFront();
+            currPtr = front;
+            position = 0;
         }
         else
         {
@@ -310,10 +312,7 @@ T LinkedList<T>::deleteFront() {
     if (--size == 0)
         rear = NULL;
 
-    if(position > 0){
-        position --;
-    }
-    reset(position);
+    reset(--position);
 
     T item = delNode->data;
     freeNode(delNode);
