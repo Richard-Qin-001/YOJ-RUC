@@ -1,126 +1,86 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <array>
+#include <compare>
+#include <iostream>
+#include <queue>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
-class State
-{
-public:
-    char m;
-    char b;
-    char g;
-    int h;
+struct State {
+    char m {};
+    char b {};
+    char g {};
+    int  h {};
 
-    bool operator< (const State& other) const {
-        if (this->m != other.m) {
-            return this->m < other.m;
-        }
-        if (this->b != other.b)
-        {
-            return this->b < other.b;
-        }
-        if (this->g != other.g)
-        {
-            return this->g < other.g;
-        }
-        return this->h < other.h;
-    }
+    auto operator<=>(const State&) const = default;
 };
 
-class Node {
-public:
+struct Node {
     State state;
-    vector<string> path;
+    std::vector<std::string> path;
 };
-
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
-    char m;
-    char b;
-    char g;
-    int h;
-    cin >> m >> b >> g >> h;
+    State start {};
+    std::cin >> start.m >> start.b >> start.g >> start.h;
 
-    queue<Node> q;
-    set<State> visited;
+    std::queue<Node> q;
+    std::set<State> visited;
 
-    State start {m, b, g, h};
     q.push({start, {}});
     visited.insert(start);
 
-    char locations[] = {'A', 'B', 'C'};
+    constexpr std::array<char, 3> locations {'A', 'B', 'C'};
 
-    while (!q.empty())
-    {
-        Node curr = q.front();
+    while (!q.empty()) {
+        Node curr = std::move(q.front());
         q.pop();
 
-        State s = curr.state;
+        const State s = curr.state;
 
         if (s.m == s.g && s.b == s.g && s.h == 1) {
-            for (const string& step : curr.path) {
-                cout << step << endl;
+            for (const std::string& step : curr.path) {
+                std::cout << step << '\n';
             }
-            cout << "Monkey reach the banana" << endl;
+            std::cout << "Monkey reach the banana\n";
             return 0;
         }
 
-        if (s.h == 1) {
-            State next_s {s.m, s.b, s.g, 0};
-            if (visited.find(next_s) == visited.end()) {
-                visited.insert(next_s);
-                vector<string> next_path = curr.path;
-                next_path.push_back("Monkey climb down from the box");
-                q.push({next_s, next_path});
+        auto try_enqueue = [&](const State& next_state, std::string action) {
+            if (visited.contains(next_state)) {
+                return;
             }
+            visited.insert(next_state);
+            auto next_path = curr.path;
+            next_path.push_back(std::move(action));
+            q.push({next_state, std::move(next_path)});
+        };
+
+        if (s.h == 1) {
+            try_enqueue({s.m, s.b, s.g, 0}, "Monkey climb down from the box");
         }
 
         if (s.h == 0) {
-            for (char loc : locations){
+            for (char loc : locations) {
                 if (loc != s.m) {
-                    State next_s {loc, s.b, s.g, 0};
-                    if (visited.find(next_s) == visited.end()) {
-                        visited.insert(next_s);
-                        vector<string> next_path = curr.path;
-                        next_path.push_back(string("Monkey go to ") + loc);
-                        q.push({next_s, next_path});
-                    }
+                    try_enqueue({loc, s.b, s.g, 0}, std::string("Monkey go to ") + loc);
                 }
             }
         }
 
-        if (s.m == s.b && s.h == 0)
-        {
-            for (char loc : locations)
-            {
-                if (loc != s.m)
-                {
-                    State next_s {loc, loc, s.g, 0};
-                    if (visited.find(next_s) == visited.end())
-                    {
-                        visited.insert(next_s);
-                        vector<string> next_path = curr.path;
-                        next_path.push_back(string("Monkey push the box to ") + loc);
-                        q.push({next_s, next_path});
-                    }
+        if (s.m == s.b && s.h == 0) {
+            for (char loc : locations) {
+                if (loc != s.m) {
+                    try_enqueue({loc, loc, s.g, 0}, std::string("Monkey push the box to ") + loc);
                 }
             }
-        }
-
-        if (s.m == s.b && s.h == 0)
-        {
-            State next_s = {s.m, s.b, s.g, 1};
-            if (visited.find(next_s) == visited.end())
-            {
-                visited.insert(next_s);
-                vector<string> next_path = curr.path;
-                next_path.push_back("Monkey climb onto the box");
-                q.push({next_s, next_path});
-            }
+            try_enqueue({s.m, s.b, s.g, 1}, "Monkey climb onto the box");
         }
     }
 
     return 0;
-    
 }
